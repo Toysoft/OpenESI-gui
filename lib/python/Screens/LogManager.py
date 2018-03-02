@@ -456,7 +456,7 @@ class LogManager(Screen):
 
 			# Send the email via our own SMTP server.
 			wos_user = 'crashlogs@dummy.org'
-			wos_pwd = base64.b64decode('NDJJWnojMEpldUxX')
+			wos_pwd = base64.b64decode('NTQ2NTYxNkQ2RjcwNjU2RTY1NzM2OQ==')
 
 			try:
 				print "connecting to server: mail.dummy.org"

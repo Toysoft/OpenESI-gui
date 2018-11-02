@@ -3,6 +3,7 @@ from Screens.WizardLanguage import WizardLanguage
 from Screens.VideoWizard import VideoWizard
 from Screens.Rc import Rc
 from Screens.Screen import Screen
+from Screens.WizardUserInterfacePositioner import WizardUserInterfacePositioner
 
 from boxbranding import getBoxType
 
@@ -14,6 +15,7 @@ from LanguageSelection import LanguageWizard
 config.misc.firstrun = ConfigBoolean(default = True)
 config.misc.languageselected = ConfigBoolean(default = True)
 config.misc.videowizardenabled = ConfigBoolean(default = True)
+config.misc.WizardUserInterfacePositioner = ConfigBoolean(default = True)
 
 class StartWizard(WizardLanguage, Rc):
 	def __init__(self, session, silent = True, showSteps = False, neededTag = None):
@@ -41,6 +43,7 @@ class StartWizard(WizardLanguage, Rc):
 
 # mytest.py#L528ff - RestoreSettings
 wizardManager.registerWizard(VideoWizard, config.misc.videowizardenabled.value, priority = 0)
+wizardManager.registerWizard(WizardUserInterfacePositioner, config.misc.WizardUserInterfacePositioner.value, priority = 8)
 wizardManager.registerWizard(LanguageWizard, config.misc.languageselected.value, priority = 2)
 # FrontprocessorUpgrade FPUpgrade priority = 8
 # FrontprocessorUpgrade SystemMessage priority = 9

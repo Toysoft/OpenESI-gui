@@ -3,8 +3,8 @@ installdir = $(pkglibdir)/python/Plugins/SystemPlugins
 SUBDIRS = PositionerSetup Satfinder SoftwareManager \
 	VideoTune Hotplug CableScan \
 	DefaultServicesScanner CommonInterfaceAssignment \
-	VideoEnhancement WirelessLan NetworkWizard VideoClippingSetup OSDPositionSetup \
-	SatelliteEquipmentControl DiseqcTester OSD3DSetup HdmiCEC FastScan LCNScanner
+	VideoEnhancement WirelessLan NetworkWizard VideoClippingSetup \
+	SatelliteEquipmentControl DiseqcTester OSDPositionSetup OSD3DSetup HdmiCEC FastScan LCNScanner
 
 if HAVE_LIBVUGLES2
 SUBDIRS += AnimationSetup

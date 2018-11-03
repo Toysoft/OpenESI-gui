@@ -8,18 +8,18 @@ config.plugins.OSDPositionSetup.dst_width = ConfigInteger(default = 720)
 config.plugins.OSDPositionSetup.dst_top = ConfigInteger(default = 0)
 config.plugins.OSDPositionSetup.dst_height = ConfigInteger(default = 576)
 
-class OSDScreenPosition(Screen, ConfigListScreen):
+class ScreenPosition(Screen, ConfigListScreen):
 	skin = """
 	<screen position="0,0" size="e,e" title="OSD position setup" backgroundColor="blue">
 		<widget name="config" position="c-175,c-75" size="350,150" foregroundColor="black" backgroundColor="blue" />
-		<ePixmap pixmap="buttons/green.png" position="c-145,e-100" zPosition="0" size="140,40" alphatest="on" />
-		<ePixmap pixmap="buttons/red.png" position="c+5,e-100" zPosition="0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/green.png" position="c-145,e-100" zPosition="0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/red.png" position="c+5,e-100" zPosition="0" size="140,40" alphatest="on" />
 		<widget name="ok" position="c-145,e-100" size="140,40" valign="center" halign="center" zPosition="1" font="Regular;20" transparent="1" backgroundColor="green" />
 		<widget name="cancel" position="c+5,e-100" size="140,40" valign="center" halign="center" zPosition="1" font="Regular;20" transparent="1" backgroundColor="red" />
 	</screen>"""
 
 	def __init__(self, session):
-		self.skin = OSDScreenPosition.skin
+		self.skin = ScreenPosition.skin
 		Screen.__init__(self, session)
 
 		from Components.ActionMap import ActionMap
@@ -28,23 +28,42 @@ class OSDScreenPosition(Screen, ConfigListScreen):
 		self["ok"] = Button(_("OK"))
 		self["cancel"] = Button(_("Cancel"))
 
-		self["actions"] = ActionMap(["SetupActions", "ColorActions", "MenuActions"],
+		self["actions"] = ActionMap(["SetupActions", "ColorActions"],
 		{
 			"ok": self.keyGo,
 			"save": self.keyGo,
 			"cancel": self.keyCancel,
 			"green": self.keyGo,
 			"red": self.keyCancel,
-			"menu": self.closeRecursive,
 		}, -2)
 
 		self.list = []
 		ConfigListScreen.__init__(self, self.list, session = self.session)
 
-		left = config.plugins.OSDPositionSetup.dst_left.value
-		width = config.plugins.OSDPositionSetup.dst_width.value
-		top = config.plugins.OSDPositionSetup.dst_top.value
-		height = config.plugins.OSDPositionSetup.dst_height.value
+		left = 0
+		width = 720
+		top = 0
+		height = 576
+
+		try:
+			file = open("/proc/stb/fb/dst_left", "r")
+			line = file.readline()
+			file.close()
+			left = int(line, 16)
+			file = open("/proc/stb/fb/dst_width", "r")
+			line = file.readline()
+			file.close()
+			width = int(line, 16)
+			file = open("/proc/stb/fb/dst_top", "r")
+			line = file.readline()
+			file.close()
+			top = int(line, 16)
+			file = open("/proc/stb/fb/dst_height", "r")
+			line = file.readline()
+			file.close()
+			height = int(line, 16)
+		except:
+			pass
 
 		self.dst_left = ConfigSlider(default = left, increment = 1, limits = (0, 720))
 		self.dst_width = ConfigSlider(default = width, increment = 1, limits = (0, 720))
@@ -86,16 +105,16 @@ def setPosition(dst_left, dst_width, dst_top, dst_height):
 	if dst_top + dst_height > 576:
 		dst_height = 576 - dst_top
 	try:
-		file = open("/proc/stb/vmpeg/0/dst_left", "w")
+		file = open("/proc/stb/fb/dst_left", "w")
 		file.write('%X' % dst_left)
 		file.close()
-		file = open("/proc/stb/vmpeg/0/dst_width", "w")
+		file = open("/proc/stb/fb/dst_width", "w")
 		file.write('%X' % dst_width)
 		file.close()
-		file = open("/proc/stb/vmpeg/0/dst_top", "w")
+		file = open("/proc/stb/fb/dst_top", "w")
 		file.write('%X' % dst_top)
 		file.close()
-		file = open("/proc/stb/vmpeg/0/dst_height", "w")
+		file = open("/proc/stb/fb/dst_height", "w")
 		file.write('%X' % dst_height)
 		file.close()
 	except:
@@ -105,14 +124,14 @@ def setConfiguredPosition():
 	setPosition(int(config.plugins.OSDPositionSetup.dst_left.value), int(config.plugins.OSDPositionSetup.dst_width.value), int(config.plugins.OSDPositionSetup.dst_top.value), int(config.plugins.OSDPositionSetup.dst_height.value))
 
 def main(session, **kwargs):
-	session.open(OSDScreenPosition)
+	session.open(ScreenPosition)
 
 def startup(reason, **kwargs):
 	setConfiguredPosition()
 
 def Plugins(**kwargs):
 	from os import path
-	if path.exists("/proc/stb/vmpeg/0/dst_left"):
+	if path.exists("/proc/stb/fb/dst_left"):
 		from Plugins.Plugin import PluginDescriptor
 		return [PluginDescriptor(name = "OSD position setup", description = "Compensate for overscan", where = PluginDescriptor.WHERE_PLUGINMENU, fnc = main),
 					PluginDescriptor(name = "OSD position setup", description = "", where = PluginDescriptor.WHERE_SESSIONSTART, fnc = startup)]

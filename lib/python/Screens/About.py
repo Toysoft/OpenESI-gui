@@ -1,5 +1,4 @@
 from Screen import Screen
-from skin import isVTISkin
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Sources.StaticText import StaticText

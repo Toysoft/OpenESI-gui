@@ -94,8 +94,11 @@ class Standby2(Screen):
 		if os.path.exists("/usr/script/StandbyLeave.sh"):
 			Console().ePopen("/usr/script/StandbyLeave.sh &")
 
-		if (getBrandOEM() in ('fulan','clap','dinobot') or getBoxType() in ('sf8008','ustym4kpro')):
-			open("/proc/stb/hdmi/output", "w").write("on")
+		if (getBrandOEM() in ('fulan','clap','dinobot') or getBoxType() in ('sf8008','sf8008s','ustym4kpro')):
+			try:
+				open("/proc/stb/hdmi/output", "w").write("on")
+			except:
+				pass
 		#set input to encoder
 		self.avswitch.setInput("ENCODER")
 		#restart last played service
@@ -207,8 +210,11 @@ class Standby2(Screen):
 			self.avswitch.setInput("SCART")
 		else:
 			self.avswitch.setInput("AUX")
-		if (getBrandOEM() in ('fulan','clap','dinobot') or getBoxType() in ('sf8008','ustym4kpro')):
-			open("/proc/stb/hdmi/output", "w").write("off")
+		if (getBrandOEM() in ('fulan','clap','dinobot') or getBoxType() in ('sf8008','sf8008s','ustym4kpro')):
+			try:
+				open("/proc/stb/hdmi/output", "w").write("off")
+			except:
+				pass
 
 		if int(config.usage.hdd_standby_in_standby.value) != -1: # HDD standby timer value (box in standby) / -1 = same as when box is active
 			for hdd in harddiskmanager.HDDList():

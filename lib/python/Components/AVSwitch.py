@@ -16,11 +16,11 @@ has_hdmi = False
 has_rca = False
 has_avjack = False
 
-has_scart = SystemInfo["HaveSCART"]
-has_scartyuv = SystemInfo["HaveSCARTYUV"]
-has_yuv = SystemInfo["HaveYUV"]
+has_scart = SystemInfo["HAVESCART"]
+has_scartyuv = SystemInfo["HAVESCARTYUV"]
+has_yuv = SystemInfo["HAVEYUV"]
 has_dvi = SystemInfo["HaveDVI"]
-has_hdmi = SystemInfo["HaveHDMI"]
+has_hdmi = SystemInfo["HAVEHDMI"]
 has_rca = SystemInfo["HaveRCA"]
 has_avjack = SystemInfo["HaveAVJACK"]
 
@@ -104,7 +104,7 @@ class AVSwitch:
 	if (about.getChipSetString() in ('7366', '7376', '5272s', '7444', '7445', '7445s')):
 		modes["HDMI"] = ["720p", "1080p", "2160p", "1080i", "576p", "576i", "480p", "480i"]
 		widescreen_modes = {"720p", "1080p", "1080i", "2160p"}
-	elif (about.getChipSetString() in ('7252', '7251', '7251S', '7252S', '7251s', '7252s', '72604', '7444s', '3798mv200', '3798cv200', 'hi3798mv200', 'hi3798cv200')):
+	elif (about.getChipSetString() in ('7252', '7251', '7251S', '7252S', '7251s', '7252s', '72604', '7278', '7444s', '3798mv200', '3798cv200', 'hi3798mv200', 'hi3798cv200')):
 		modes["HDMI"] = ["720p", "1080p", "2160p", "2160p30", "1080i", "576p", "576i", "480p", "480i"]
 		widescreen_modes = {"720p", "1080p", "1080i", "2160p", "2160p30"}
 	elif (about.getChipSetString() in ('7241', '7358', '7362', '73625', '7346', '7356', '73565', '7424', '7425', '7435', '7552', '7581', '7584', '75845', '7585', 'pnx8493', '7162', '7111')) or (getBrandOEM() in ('azbox')):
@@ -123,15 +123,15 @@ class AVSwitch:
 	modes["YPbPr"] = modes["HDMI"]
 	if has_scartyuv:
 		modes["Scart-YPbPr"] = modes["HDMI"]
-	if modes.has_key("YPbPr") and not has_yuv:
-		del modes["YPbPr"]
-	if modes.has_key("Scart") and not has_scart and not has_rca and not has_avjack:
-			del modes["Scart"]
 
 	# if modes.has_key("DVI-PC") and not getModeList("DVI-PC"):
 	# 	print "[AVSwitch] remove DVI-PC because of not existing modes"
 	# 	del modes["DVI-PC"]
-
+	if modes.has_key("YPbPr") and not has_yuv:
+		del modes["YPbPr"]
+	if modes.has_key("Scart") and not has_scart and not has_rca and not has_avjack:
+			del modes["Scart"]
+		
 	if getBoxType() in ('mutant2400'):
 		f = open("/proc/stb/info/board_revision", "r").read()
 		if f >= "2":
@@ -495,7 +495,7 @@ def InitAVSwitch():
 		config.av.yuvenabled = ConfigBoolean(default=False)
 	else:
 		config.av.yuvenabled = ConfigBoolean(default=True)
-	config.av.osd_alpha = ConfigSlider(default=255, increment = 5, limits=(20,255)) # Make openESI compatible with some plugins who still use config.av.osd_alpha
+	config.av.osd_alpha = ConfigSlider(default=255, increment = 5, limits=(20,255)) # Make openATV compatible with some plugins who still use config.av.osd_alpha
 	colorformat_choices = {"cvbs": _("CVBS"), "rgb": _("RGB"), "svideo": _("S-Video")}
 	# when YUV is not enabled, don't let the user select it
 	if config.av.yuvenabled.value:
@@ -748,7 +748,7 @@ def InitAVSwitch():
 				f.close()
 			except:
 				pass
-		if getBoxType() in ('vusolo4k','vuuno4k','vuuno4kse','vuultimo4k'):
+		if getBoxType() in ('vusolo4k','vuuno4k','vuuno4kse','vuultimo4k','vuduo4k'):
 			config.av.hdmicolorspace = ConfigSelection(choices={
 					"Edid(Auto)": _("Auto"),
 					"Hdmi_Rgb": _("RGB"),
@@ -981,9 +981,12 @@ def InitAVSwitch():
 
 	if can_3dsurround_speaker:
 		def set3DSurroundSpeaker(configElement):
-			f = open("/proc/stb/audio/3d_surround_speaker_position", "w")
-			f.write(configElement.value)
-			f.close()
+			try:
+				f = open("/proc/stb/audio/3d_surround_speaker_position", "w")
+				f.write(configElement.value)
+				f.close()
+			except:
+				pass
 		choice_list = [("center", _("center")), ("wide", _("wide")), ("extrawide", _("extra wide"))]
 		config.av.surround_3d_speaker = ConfigSelection(choices = choice_list, default = "center")
 		config.av.surround_3d_speaker.addNotifier(set3DSurroundSpeaker)
@@ -1021,6 +1024,13 @@ def InitAVSwitch():
 			open("/proc/stb/audio/multichannel_pcm", "w").write(configElement.value and "enable" or "disable")
 		config.av.pcm_multichannel = ConfigYesNo(default = False)
 		config.av.pcm_multichannel.addNotifier(setPCMMultichannel)
+
+	def setVolumeStepsize(configElement):
+		eDVBVolumecontrol.getInstance().setVolumeSteps(int(configElement.value))
+	config.av.volume_stepsize = ConfigSelectionNumber(1, 10, 1, default = 5)
+	config.av.volume_stepsize_fastmode = ConfigSelectionNumber(1, 10, 1, default = 5)
+	config.av.volume_hide_mute = ConfigYesNo(default = True)
+	config.av.volume_stepsize.addNotifier(setVolumeStepsize)
 
 	try:
 		f = open("/proc/stb/audio/ac3_choices", "r")

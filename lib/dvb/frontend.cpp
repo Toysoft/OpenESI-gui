@@ -388,7 +388,7 @@ RESULT eDVBFrontendParameters::calculateDifference(const iDVBFrontendParameters 
 	{
 		case iDVBFrontend::feSatellite:
 		{
-			eDVBFrontendParametersSatellite osat;
+			eDVBFrontendParametersSatellite osat = {0};
 			if (parm->getDVBS(osat))
 				return -2;
 			if (sat.orbital_position != osat.orbital_position)
@@ -414,7 +414,7 @@ RESULT eDVBFrontendParameters::calculateDifference(const iDVBFrontendParameters 
 		}
 		case iDVBFrontend::feCable:
 		{
-			eDVBFrontendParametersCable ocable;
+			eDVBFrontendParametersCable ocable = {0};
 			if (parm->getDVBC(ocable))
 				return -2;
 
@@ -433,7 +433,7 @@ RESULT eDVBFrontendParameters::calculateDifference(const iDVBFrontendParameters 
 		}
 		case iDVBFrontend::feTerrestrial:
 		{
-			eDVBFrontendParametersTerrestrial oterrestrial;
+			eDVBFrontendParametersTerrestrial oterrestrial = {0};
 			if (parm->getDVBT(oterrestrial))
 				return -2;
 
@@ -474,7 +474,7 @@ RESULT eDVBFrontendParameters::calculateDifference(const iDVBFrontendParameters 
 		}
 		case iDVBFrontend::feATSC:
 		{
-			eDVBFrontendParametersATSC oatsc;
+			eDVBFrontendParametersATSC oatsc = {0};
 			if (parm->getATSC(oatsc))
 				return -2;
 
@@ -1238,7 +1238,7 @@ void eDVBFrontend::calculateSignalQuality(int snr, int &signalquality, int &sign
 	}
 	else if (!strcmp(m_description, "BCM4501 (internal)"))
 	{
-		eDVBFrontendParametersSatellite parm;
+		eDVBFrontendParametersSatellite parm = {0};
 		float SDS_SNRE = snr << 16;
 		float snr_in_db;
 		oparm.getDVBS(parm);
@@ -1351,7 +1351,7 @@ void eDVBFrontend::calculateSignalQuality(int snr, int &signalquality, int &sign
 	}
 	else if (!strcmp(m_description, "Philips CU1216Mk3"))
 	{
-		eDVBFrontendParametersCable parm;
+		eDVBFrontendParametersCable parm = {0};
 		int mse = (~snr) & 0xFF;
 		oparm.getDVBC(parm);
 		switch (parm.modulation)
@@ -1469,6 +1469,7 @@ void eDVBFrontend::calculateSignalQuality(int snr, int &signalquality, int &sign
 	}
 	else if (!strcmp(m_description, "CXD1981"))
 	{
+		eDVBFrontendParametersCable parm = {0};
 		int mse = (~snr) & 0xFF;
 		int type = -1;
 		oparm.getSystem(type);
@@ -1507,7 +1508,7 @@ void eDVBFrontend::calculateSignalQuality(int snr, int &signalquality, int &sign
 	}
 	else if (!strcmp(m_description, "Si216x"))
 	{
-		eDVBFrontendParametersTerrestrial parm;
+		eDVBFrontendParametersTerrestrial parm = {0};
 		oparm.getDVBT(parm);
 		switch (parm.system)
 		{
@@ -1555,7 +1556,7 @@ void eDVBFrontend::calculateSignalQuality(int snr, int &signalquality, int &sign
 	}
 	else if(!strcmp(m_description, "WinTV HVR-850") || !strcmp(m_description, "Hauppauge") || !strcmp(m_description, "LG Electronics LGDT3306A VSB/QAM Frontend"))
 	{
-		eDVBFrontendParametersATSC parm;
+		eDVBFrontendParametersATSC parm = {0};
 		oparm.getATSC(parm);
 		switch (parm.modulation)
 		{
@@ -2608,7 +2609,7 @@ void eDVBFrontend::setFrontend(bool recvEvents)
 #endif
 		if (type == iDVBFrontend::feSatellite)
 		{
-			eDVBFrontendParametersSatellite parm;
+			eDVBFrontendParametersSatellite parm = {0};
 			fe_rolloff_t rolloff = ROLLOFF_35;
 			fe_pilot_t pilot = PILOT_OFF;
 			fe_modulation_t modulation = QPSK;
@@ -2702,7 +2703,7 @@ void eDVBFrontend::setFrontend(bool recvEvents)
 		}
 		else if (type == iDVBFrontend::feCable)
 		{
-			eDVBFrontendParametersCable parm;
+			eDVBFrontendParametersCable parm = {0};
 			oparm.getDVBC(parm);
 #if HAVE_ALIEN5
 			m_looptimeout = 300;
@@ -2775,7 +2776,7 @@ void eDVBFrontend::setFrontend(bool recvEvents)
 		}
 		else if (type == iDVBFrontend::feTerrestrial)
 		{
-			eDVBFrontendParametersTerrestrial parm;
+			eDVBFrontendParametersTerrestrial parm = {0};
 			fe_delivery_system_t system = SYS_DVBT;
 			oparm.getDVBT(parm);
 #if HAVE_ALIEN5
@@ -2910,7 +2911,7 @@ void eDVBFrontend::setFrontend(bool recvEvents)
 		}
 		else if (type == iDVBFrontend::feATSC)
 		{
-			eDVBFrontendParametersATSC parm;
+			eDVBFrontendParametersATSC parm = {0};
 			oparm.getATSC(parm);
 			//p[cmdseq.num].cmd = DTV_LNA, p[cmdseq.num].u.data = 0, cmdseq.num++;
 			p[cmdseq.num].cmd = DTV_DELIVERY_SYSTEM;

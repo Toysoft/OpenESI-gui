@@ -30,8 +30,6 @@ def getButtonSetupKeys():
 		(_("Epg/Guide long"), "epg_long", "Infobar/showEventGuidePlugins/1"),
 		(_("Left"), "cross_left", ""),
 		(_("Right"), "cross_right", ""),
-		(_("Left long"), "cross_left_long", ""),
-		(_("Right long"), "cross_right_long", "Infobar/seekFwdVod"),
 		(_("Up"), "cross_up", ""),
 		(_("Down"), "cross_down", ""),
 		(_("PageUp"), "pageup", ""),
@@ -64,26 +62,17 @@ def getButtonSetupKeys():
 		(_("Media long"), "media_long", ""),
 		(_("Open"), "open", ""),
 		(_("Open long"), "open_long", ""),
-		(_("Option"), "option", ""),
-		(_("Option long"), "option_long", ""),
 		(_("Www"), "www", ""),
 		(_("Www long"), "www_long", ""),
 		(_("Directory"), "directory", ""),
 		(_("Directory long"), "directory_long", ""),
 		(_("Back/Recall"), "back", ""),
 		(_("Back/Recall") + " " + _("long"), "back_long", ""),
-		(_("History"), "archive", ""),
-		(_("History long"), "archive_long", ""),
-		(_("Aspect"), "mode", ""),
-		(_("Aspect long"), "mode_long", ""),
 		(_("Home"), "home", ""),
-		(_("Home long"), "home_long", ""),
 		(_("End"), "end", ""),
-		(_("End long"), "end_long", ""),
 		(_("Next"), "next", ""),
 		(_("Previous"), "previous", ""),
 		(_("Audio"), "audio", ""),
-		(_("Audio long"), "audio_long", ""),
 		(_("Play"), "play", ""),
 		(_("Playpause"), "playpause", ""),
 		(_("Stop"), "stop", ""),
@@ -95,10 +84,6 @@ def getButtonSetupKeys():
 		(_("activatePiP"), "activatePiP", ""),
 		(_("Playlist"), "playlist", ""),
 		(_("Playlist long"), "playlist_long", ""),
-		(_("Nextsong"), "nextsong", ""),
-		(_("Nextsong long"), "nextsong_long", ""),
-		(_("Prevsong"), "prevsong", ""),
-		(_("Prevsong long"), "prevsong_long", ""),
 		(_("Program"), "prog", ""),
 		(_("Program long"), "prog_long", ""),
 		(_("Timeshift"), "timeshift", ""),
@@ -120,22 +105,14 @@ def getButtonSetupKeys():
 		(_("SAT long"), "sat_long", ""),
 		(_("Prov"), "prov", ""),
 		(_("Prov long"), "prov_long", ""),
-		(_("LAN"), "lan", ""),
-		(_("LAN long"), "lan_long", ""),
-		(_("PC"), "pc", ""),
-		(_("PC long"), "pc_long", ""),
-		(_("F1"), "f1", ""),
-		(_("F1 long"), "f1_long", ""),
+		(_("F1/LAN"), "f1", ""),
+		(_("F1/LAN long"), "f1_long", ""),
 		(_("F2"), "f2", ""),
 		(_("F2 long"), "f2_long", ""),
 		(_("F3"), "f3", ""),
 		(_("F3 long"), "f3_long", ""),
 		(_("F4"), "f4", ""),
-		(_("F4 long"), "f4_long", ""),
-		(_("PIP"), "f6", ""),
-		(_("PIP long"), "f6_long", ""),
-		(_("ZOOM"), "zoom", ""),
-		(_("ZOOM long"), "zoom_long", "")]
+		(_("F4 long"), "f4_long", ""),]
 
 config.misc.ButtonSetup = ConfigSubsection()
 config.misc.ButtonSetup.additional_keys = ConfigYesNo(default=True)
@@ -202,7 +179,6 @@ def getButtonSetupFunctions():
 	ButtonSetupFunctions.append((_("Show subtitle selection"), "Infobar/subtitleSelection", "InfoBar"))
 	ButtonSetupFunctions.append((_("Show subtitle quick menu"), "Infobar/subtitleQuickMenu", "InfoBar"))
 	ButtonSetupFunctions.append((_("Letterbox zoom"), "Infobar/vmodeSelection", "InfoBar"))
-	ButtonSetupFunctions.append((_("Seekbar"), "Infobar/seekFwdVod", "InfoBar"))
 	if SystemInfo["PIPAvailable"]:
 		ButtonSetupFunctions.append((_("Show PIP"), "Infobar/showPiP", "InfoBar"))
 		ButtonSetupFunctions.append((_("Swap PIP"), "Infobar/swapPiP", "InfoBar"))
@@ -214,14 +190,11 @@ def getButtonSetupFunctions():
 		ButtonSetupFunctions.append((_("Toggle HDMI-In PiP"), "Infobar/HDMIInPiP", "InfoBar"))
 	if SystemInfo["LcdLiveTV"]:
 		ButtonSetupFunctions.append((_("Toggle LCD LiveTV"), "Infobar/ToggleLCDLiveTV", "InfoBar"))
-	if SystemInfo["HaveMultiBootHD"]:
+	if SystemInfo["HaveMultiBoot"]:
 		ButtonSetupFunctions.append((_("MultiBoot Selector"), "Module/Screens.MultiBootStartup/MultiBootStartup", "InfoBar"))
-	if SystemInfo["HaveMultiBootGB"]:
-		ButtonSetupFunctions.append((_("MultiBoot Selector"), "Module/Screens.MultiBootStartupGB/MultiBootStartup", "InfoBar"))
 	ButtonSetupFunctions.append((_("Hotkey Setup"), "Module/Screens.ButtonSetup/ButtonSetup", "Setup"))
 	ButtonSetupFunctions.append((_("Software update"), "Module/Screens.SoftwareUpdate/UpdatePlugin", "Setup"))
 	ButtonSetupFunctions.append((_("CI (Common Interface) Setup"), "Module/Screens.Ci/CiSelection", "Setup"))
-	ButtonSetupFunctions.append((_("Videosetup"), "Module/Screens.VideoMode/VideoSetup", "Setup"))
 	ButtonSetupFunctions.append((_("Tuner Configuration"), "Module/Screens.Satconfig/NimSelection", "Scanning"))
 	ButtonSetupFunctions.append((_("Manual Scan"), "Module/Screens.ScanSetup/ScanSetup", "Scanning"))
 	ButtonSetupFunctions.append((_("Automatic Scan"), "Module/Screens.ScanSetup/ScanSimple", "Scanning"))
@@ -229,7 +202,6 @@ def getButtonSetupFunctions():
 		ButtonSetupFunctions.append((plugin[0], "MenuPlugin/scan/" + plugin[2], "Scanning"))
 	ButtonSetupFunctions.append((_("Network setup"), "Module/Screens.NetworkSetup/NetworkAdapterSelection", "Setup"))
 	ButtonSetupFunctions.append((_("Network menu"), "Infobar/showNetworkMounts", "Setup"))
-	ButtonSetupFunctions.append((_("VPN"), "Module/Screens.NetworkSetup/NetworkOpenvpn", "Setup"))
 	ButtonSetupFunctions.append((_("Plugin Browser"), "Module/Screens.PluginBrowser/PluginBrowser", "Setup"))
 	ButtonSetupFunctions.append((_("Channel Info"), "Module/Screens.ServiceInfo/ServiceInfo", "Setup"))
 	ButtonSetupFunctions.append((_("SkinSelector"), "Module/Screens.SkinSelector/SkinSelector", "Setup"))
@@ -266,8 +238,6 @@ def getButtonSetupFunctions():
 		ButtonSetupFunctions.append((_("Kodi MediaCenter"), "Kodi/", "Plugins"))
 	if os.path.isfile("/usr/lib/enigma2/python/Plugins/SystemPlugins/BluetoothSetup/plugin.pyo"):
 		ButtonSetupFunctions.append((_("Bluetooth Setup"), "Bluetooth/", "Plugins"))
-	if os.path.isfile("/usr/lib/enigma2/python/Plugins/Extensions/Chromium/plugin.pyo"):
-		ButtonSetupFunctions.append((_("Youtube TV"), "YoutubeTV/", "Plugins"))
 	return ButtonSetupFunctions
 
 class ButtonSetup(Screen):
@@ -316,16 +286,17 @@ class ButtonSetup(Screen):
 	def ButtonSetupGlobal(self, key):
 		if self.longkeyPressed:
 			self.longkeyPressed = False
-		index = 0
-		for x in self.list[:config.misc.ButtonSetup.additional_keys.value and len(self.ButtonSetupKeys) or 10]:
-			if key == x[0][1]:
-				self["list"].moveToIndex(index)
-				if key.endswith("_long"):
-					self.longkeyPressed = True
-				break
-			index += 1
-		self.getFunctions()
-		self.session.open(ButtonSetupSelect, self["list"].l.getCurrentSelection())
+		else:
+			index = 0
+			for x in self.list[:config.misc.ButtonSetup.additional_keys.value and len(self.ButtonSetupKeys) or 10]:
+				if key == x[0][1]:
+					self["list"].moveToIndex(index)
+					if key.endswith("_long"):
+						self.longkeyPressed = True
+					break
+				index += 1
+			self.getFunctions()
+			self.session.open(ButtonSetupSelect, self["list"].l.getCurrentSelection())
 
 	def getFunctions(self):
 		key = self["list"].l.getCurrentSelection()[0][1]
@@ -371,8 +342,8 @@ class ButtonSetupSelect(Screen):
 			"right": self.keyRight,
 			"pageUp": self.toggleMode,
 			"pageDown": self.toggleMode,
-			"moveUp": self.moveUp,
-			"moveDown": self.moveDown,
+			"shiftUp": self.moveUp,
+			"shiftDown": self.moveDown,
 		}, -1)
 		self.onShown.append(self.enableKeyMap)
 		self.onClose.append(self.disableKeyMap)
@@ -649,10 +620,6 @@ class InfoBarButtonSetup():
 				if os.path.isfile("/usr/lib/enigma2/python/Plugins/SystemPlugins/BluetoothSetup/plugin.pyo"):
 					from Plugins.SystemPlugins.BluetoothSetup.plugin import BluetoothSetup
 					self.session.open(BluetoothSetup)
-			elif selected[0] == "YoutubeTV":
-				if os.path.isfile("/usr/lib/enigma2/python/Plugins/Extensions/Chromium/plugin.pyo"):
-					from Plugins.Extensions.Chromium.youtube import YoutubeTVWindow
-					self.session.open(YoutubeTVWindow)
 
 	def showServiceListOrMovies(self):
 		if hasattr(self, "openServiceList"):

@@ -79,9 +79,6 @@ class EPGSelection(Screen, HelpableScreen):
 		self.eventviewDialog = None
 		self.eventviewWasShown = False
 		self.currch = None
-		self.Oldpipshown = False
-		if self.session.pipshown:
-			self.Oldpipshown = True
 		self.session.pipshown = False
 		self.cureventindex = None
 		if plugin_PiPServiceRelation_installed:
@@ -1106,12 +1103,11 @@ class EPGSelection(Screen, HelpableScreen):
 				foundtimer = timer
 				break
 		else:
-			if self.session.nav.isRecordTimerImageStandard:
-				eventBegin = event.getBeginTime()
-				eventDuration = event.getDuration()
-				x = self.session.nav.RecordTimer.isInTimer(eventid, eventBegin, eventDuration, refstr, True)
-				if x and x[1] in (2,7,12):
-					foundtimer = x[3]
+			eventBegin = event.getBeginTime()
+			eventDuration = event.getDuration()
+			x = self.session.nav.RecordTimer.isInTimer(eventid, eventBegin, eventDuration, refstr, True)
+			if x and x[1] in (2,7,12):
+				foundtimer = x[3]
 
 		if foundtimer:
 			timer = foundtimer
@@ -1380,12 +1376,11 @@ class EPGSelection(Screen, HelpableScreen):
 				isRecordEvent = True
 				break
 		else:
-			if self.session.nav.isRecordTimerImageStandard:
-				eventBegin = event.getBeginTime()
-				eventDuration = event.getDuration()
-				x = self.session.nav.RecordTimer.isInTimer(eventid, eventBegin, eventDuration, refstr)
-				if x and x[1] in (2,7,12):
-					isRecordEvent = True
+			eventBegin = event.getBeginTime()
+			eventDuration = event.getDuration()
+			x = self.session.nav.RecordTimer.isInTimer(eventid, eventBegin, eventDuration, refstr)
+			if x and x[1] in (2,7,12):
+				isRecordEvent = True
 
 		if isRecordEvent and self.key_green_choice != self.REMOVE_TIMER:
 			self.setTimerButtonText(_("Change timer"))
@@ -1424,12 +1419,6 @@ class EPGSelection(Screen, HelpableScreen):
 		if self.type == EPG_TYPE_SINGLE:
 			self.close()
 			return # stop and do not continue.
-		if hasattr(self, 'servicelist') and self.servicelist:
-			selected_ref = str(ServiceReference(self.servicelist.getCurrentSelection()))
-			current_ref = str(ServiceReference(self.session.nav.getCurrentlyPlayingServiceOrGroup()))
-			if selected_ref != current_ref:
-				self.servicelist.restoreRoot()
-				self.servicelist.setCurrentSelection(self.session.nav.getCurrentlyPlayingServiceOrGroup())
 		if self.session.nav.getCurrentlyPlayingServiceOrGroup() and self.StartRef and self.session.nav.getCurrentlyPlayingServiceOrGroup().toString() != self.StartRef.toString():
 			if self.zapFunc and self.StartRef and self.StartBouquet:
 				if ((self.type == EPG_TYPE_GRAPH and config.epgselection.graph_preview_mode.value) or 
@@ -1443,11 +1432,8 @@ class EPGSelection(Screen, HelpableScreen):
 				else:
 					self.zapFunc(None, False)
 		if self.session.pipshown:
-			self.Oldpipshown = False
 			self.session.pipshown = False
 			del self.session.pip
-		if self.Oldpipshown:
-			self.session.pipshown = True
 		self.closeEventViewDialog()
 		self.close(True)
 

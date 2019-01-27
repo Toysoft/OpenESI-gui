@@ -90,7 +90,7 @@ def skin_user_skinname():
 
 # example: loadSkin("nemesis_greenline/skin.xml")
 config.skin = ConfigSubsection()
-DEFAULT_SKIN = "Kodi_Transparent_FHD/skin.xml"
+DEFAULT_SKIN = "Elgato-HD-CN/skin.xml"
 if not fileExists(resolveFilename(SCOPE_SKIN, DEFAULT_SKIN)):
 	DEFAULT_SKIN = "skin.xml"
 config.skin.primary_skin = ConfigText(default=DEFAULT_SKIN)
@@ -466,11 +466,7 @@ class AttributeParser:
 	def shadowOffset(self, value):
 		self.guiObject.setShadowOffset(parsePosition(value, self.scaleTuple))
 	def noWrap(self, value):
-		self.guiObject.setNoWrap(int(value))
-	def linelength(self, value):
-		pass
-	def OverScan(self, value):
-		self.guiObject.setOverscan(value)
+		self.guiObject.setNoWrap(1)
 
 def applySingleAttribute(guiObject, desktop, attrib, value, scale = ((1,1),(1,1))):
 	# Someone still using applySingleAttribute?

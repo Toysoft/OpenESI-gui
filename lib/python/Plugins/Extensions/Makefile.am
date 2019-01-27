@@ -7,30 +7,14 @@ SUBDIRS += DVDPlayer
 endif
 
 if VUSOLO4K
-SUBDIRS += MiniTV QuadPip
-endif
-
-if VUULTIMO4K
-SUBDIRS += MiniTV QuadPip
-endif
-
-if GB7252
-SUBDIRS += QuadPip
-endif
-
-if VUUNO4K
-SUBDIRS += QuadPip
-endif
-
-if VUUNO4KSE
-SUBDIRS += MiniTV QuadPip
-endif
-
-if S8100
 SUBDIRS += MiniTV
 endif
 
-if HAVE_KODI
+if VUULTIMO4K
+SUBDIRS += MiniTV
+endif
+
+if HAVE_WETEK_XBMC
 SUBDIRS +=  StartKodi
 endif
 

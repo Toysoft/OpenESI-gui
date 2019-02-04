@@ -67,6 +67,8 @@ struct gOpcode
 		sendShow,
 		sendHide,
 #ifdef USE_LIBVUGLES2
+		sendShowItem,
+		setFlush,
 		setView,
 #endif
 	} opcode;
@@ -156,6 +158,18 @@ struct gOpcode
 			eSize size;
 		} *setShowHideInfo;
 #ifdef USE_LIBVUGLES2
+		struct psetShowItemInfo
+		{
+			long dir;
+			ePoint point;
+			eSize size;
+		} *setShowItemInfo;
+		
+		struct psetFlush
+		{
+			bool enable;
+		} *setFlush;
+		
 		struct psetViewInfo
 		{
 			eSize size;
@@ -203,6 +217,11 @@ public:
 	virtual ~gRC();
 
 	void submit(const gOpcode &o);
+
+#ifdef CONFIG_ION
+	void lock();
+	void unlock();
+#endif
 
 	sigc::signal0<void> notify;
 
@@ -293,6 +312,8 @@ public:
 	void sendShow(ePoint point, eSize size);
 	void sendHide(ePoint point, eSize size);
 #ifdef USE_LIBVUGLES2
+	void sendShowItem(long dir, ePoint point, eSize size);
+	void setFlush(bool val);
 	void setView(eSize size);
 #endif
 };

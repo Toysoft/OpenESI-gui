@@ -3,17 +3,17 @@
 #
 
 LANG_TEXT = {
-"it_IT": {
-	 "T1": "Selezionare la propria lingua utilizzando i tasti Sù/Giù. Premere OK per confermare.",
-	 "T2": "Selezione lingua",
-	 "T3": "Annull.",
-	 "T4": "Salvare",
+"de_DE": {
+	 "T1": "Für Sprachauswahl Hoch/Runter-Tasten nutzen. Danach OK drücken.",
+	 "T2": "Sprachauswahl",
+	 "T3": "Abbrechen",
+	 "T4": "Speichern",
 },
-"en_GB": {
-	 "T1": "Please use the UP and DOWN keys to select your language. Afterwards press the OK button.",
-	 "T2": "Language selection",
-	 "T3": "Cancel",
-	 "T4": "Save",
+"ar_AE": {
+	 "T1": "من فضلك أستخدم ذر السهم العلوى أو السفلى لإختيار اللغه. ثم أضغط موافق .",
+	 "T2": "إختيار اللغـه",
+	 "T3": "إلغاء",
+	 "T4": "حفظ",
 },
 "bg_BG": {
 	 "T1": "Използвайте UP и DOWN бутони за избор на вашия език. След това натиснете ОК",
@@ -51,11 +51,11 @@ LANG_TEXT = {
 	 "T3": "Άκυρο ",
 	 "T4": "Αποθήκευση",
 },
-"ar_AE": {
-	 "T1": "من فضلك أستخدم ذر السهم العلوى أو السفلى لإختيار اللغه. ثم أضغط موافق .",
-	 "T2": "إختيار اللغـه",
-	 "T3": "إلغاء",
-	 "T4": "حفظ",
+"en_GB": {
+	 "T1": "Please use the UP and DOWN keys to select your language. Afterwards press the OK button.",
+	 "T2": "Language selection",
+	 "T3": "Cancel",
+	 "T4": "Save",
 },
 "en_US": {
 	 "T1": "Please use the UP and DOWN keys to select your language. Afterwards press the OK button.",
@@ -129,11 +129,11 @@ LANG_TEXT = {
 	 "T3": "Hætta við",
 	 "T4": "Vista",
 },
-"de_DE": {
-	 "T1": "Für Sprachauswahl Hoch/Runter-Tasten nutzen. Danach OK drücken.",
-	 "T2": "Sprachauswahl",
-	 "T3": "Abbrechen",
-	 "T4": "Speichern",
+"it_IT": {
+	 "T1": "Selezionare la propria lingua utilizzando i tasti Sù/Giù. Premere OK per confermare.",
+	 "T2": "Selezione lingua",
+	 "T3": "Annull.",
+	 "T4": "Salvare",
 },
 "ku_KU": {
 	 "T1": "Please use the UP and DOWN keys to select your language. Afterwards press the OK button.",

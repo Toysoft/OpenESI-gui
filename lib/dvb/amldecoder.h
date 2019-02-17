@@ -125,7 +125,6 @@ public:
 	int getVideoProgressive();
 	int getVideoFrameRate();
 	int getVideoAspect();
-	int getVideoGamma();
 	static RESULT setHwPCMDelay(int delay);
 	static RESULT setHwAC3Delay(int delay);
 };

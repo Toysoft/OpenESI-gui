@@ -51,9 +51,9 @@ from boxbranding import getBoxType, getMachineProcModel, getMachineBuild, getMac
 
 from time import time, localtime, strftime
 from bisect import insort
+from sys import maxint
 from keyids import KEYIDS
 from datetime import datetime
-from sys import maxint
 
 import os, cPickle
 
@@ -507,10 +507,7 @@ class SecondInfoBar(Screen):
 			description += '\n'
 		elif description and not extended:
 			extended = description
-		if description == extended:
-			text = description
-		else:
-			text = description + extended
+		text = description + extended
 		self.setTitle(event.getEventName())
 		self["epg_description"].setText(text)
 		self["FullDescription"].setText(extended)
@@ -1058,8 +1055,8 @@ class NumberZap(Screen):
 			self["servicename"].setText(ServiceReference(self.service).getServiceName())
 
 	def keyNumberGlobal(self, number):
-		if config.usage.numzaptimeoutmode.value != "off":
-			if config.usage.numzaptimeoutmode.value == "standard":
+		if config.usage.numzaptimeoutmode.value is not "off":
+			if config.usage.numzaptimeoutmode.value is "standard":
 				self.Timer.start(1000, True)
 			else:
 				self.Timer.start(config.usage.numzaptimeout2.value, True)
@@ -1075,9 +1072,7 @@ class NumberZap(Screen):
 			self.showPicon()
 
 		if len(self.numberString) >= int(config.usage.maxchannelnumlen.value):
-			if self.Timer.isActive():
-				self.Timer.stop()
-			self.Timer.start(100, True)
+			self.keyOK()
 
 	def showPicon(self):
 		self["Service"].newService(self.service)
@@ -1126,10 +1121,8 @@ class NumberZap(Screen):
 
 		self.Timer = eTimer()
 		self.Timer.callback.append(self.keyOK)
-		if config.usage.maxchannelnumlen.value == "1":
-			self.Timer.start(100, True)
-		elif config.usage.numzaptimeoutmode.value != "off":
-			if config.usage.numzaptimeoutmode.value == "standard":
+		if config.usage.numzaptimeoutmode.value is not "off":
+			if config.usage.numzaptimeoutmode.value is "standard":
 				self.Timer.start(3000, True)
 			else:
 				self.Timer.start(config.usage.numzaptimeout1.value, True)
@@ -1613,7 +1606,7 @@ class InfoBarMenu:
 		else:
 			config.av.aspect.value = "auto"
 		config.av.aspect.save()
-		self.session.open(MessageBox, _("AV aspect is %s.") % ASPECT_MSG[config.av.aspect.value], MessageBox.TYPE_INFO, timeout=5)
+		self.session.open(MessageBox, _("AV aspect is %s." % ASPECT_MSG[config.av.aspect.value]), MessageBox.TYPE_INFO, timeout=5)
 
 	def showSystemMenu(self):
 		menulist = mdom.getroot().findall('menu')
@@ -1654,7 +1647,7 @@ class InfoBarMenu:
 class InfoBarSimpleEventView:
 	""" Opens the Eventview for now/next """
 	def __init__(self):
-		self["EventViewActions"] = HelpableActionMap(self, "InfobarEPGActions",
+		self["EPGActions"] = HelpableActionMap(self, "InfobarEPGActions",
 			{
 				"showEventInfo": (self.openEventView, _("show event details")),
 				"InfoPressed": (self.openEventView, _("show event details")),
@@ -1935,7 +1928,7 @@ class InfoBarEPG:
 	def openBouquetEPG(self, bouquet = None, bouquets = None):
 		if bouquet:
 			self.StartBouquet = bouquet
-		self.dlg_stack.append(self.session.openWithCallback(self.closed, EPGSelection, None, zapFunc=self.zapToService, EPGtype=self.EPGtype, StartBouquet=self.StartBouquet, StartRef=self.StartRef, bouquets = bouquets))
+		self.dlg_stack.append(self.session.openWithCallback(self.closed, EPGSelection, zapFunc=self.zapToService, EPGtype=self.EPGtype, StartBouquet=self.StartBouquet, StartRef=self.StartRef, bouquets = bouquets))
 
 	def closed(self, ret=False):
 		if not self.dlg_stack:
@@ -3139,7 +3132,7 @@ class InfoBarExtensions:
 		return _("Restart Network")
 
 	def getRestartNetwork(self):
-		return [((boundFunction(self.getRestartNetworkname), boundFunction(self.openRestartNetwork), lambda: True), None)]
+			return [((boundFunction(self.getRestartNetworkname), boundFunction(self.openRestartNetwork), lambda: True), None)]
 
 	def get3DSetupname(self):
 		return _("OSD 3D Setup")
@@ -3644,8 +3637,6 @@ class InfoBarESIpanel:
 		if os.path.isfile("/usr/lib/enigma2/python/Plugins/Extensions/WebkitHbbTV/plugin.pyo"):
 			isHBBTV = True
 		if os.path.isfile("/usr/lib/enigma2/python/Plugins/Extensions/QtHbbtv/plugin.pyo"):
-			isHBBTV = True
-		if os.path.isfile("/usr/lib/enigma2/python/Plugins/Extensions/Hbbtv/plugin.pyo"):
 			isHBBTV = True
 
 		if isWEBBROWSER or isHBBTV:
@@ -5286,58 +5277,4 @@ class InfoBarOpenOnTopHelper:
 				self.session.open(session, option)
 		except Exception, e:
 			print "[openInfoBarSession] Exception:", e
-
-#########################################################################################
-# handle bsod (python crashes) and show information after crash                         #
-#########################################################################################
-
-from enigma import getBsodCounter, resetBsodCounter
-class InfoBarHandleBsod:
-	def __init__(self):
-		self.lastBsod = 0
-		self.infoBsodIsShown = False
-		self.lastestBsodWarning = False
-		self.checkBsodTimer = eTimer()
-		self.checkBsodTimer.callback.append(self.checkBsodCallback)
-		self.checkBsodTimer.start(1000, True)
-		config.crash.bsodpython_ready.setValue(True)
-
-	def checkBsodCallback(self):
-		self.checkBsodTimer.start(1000, True)
-		if Screens.Standby.inStandby or self.infoBsodIsShown:
-			return
-		bsodcnt = getBsodCounter()
-		if config.crash.bsodpython.value and self.lastBsod < bsodcnt:
-			maxbs = int(config.crash.bsodmax.value) or 100
-			writelog = bsodcnt == 1 or not bsodcnt > int(config.crash.bsodhide.value) or bsodcnt >= maxbs
-			txt = _("Your Receiver has a Software problem detected. Since the last reboot it has occured %d times.\n") %bsodcnt
-			txt += _("(Attention: There will be a restart after %d crashes.)") %maxbs
-			if writelog:
-				txt += "\n" + "-"*80 + "\n"
-				txt += _("A crashlog was %s created in '%s'") %((_('not'),'')[int(writelog)], config.crash.debug_path.value)
-			#if not writelog:
-			#	txt += "\n" + "-"*80 + "\n"
-			#	txt += _("(It is set that '%s' crash logs are displayed and written.\nInfo: It will always write the first, last but one and lastest crash log.)") % str(int(config.crash.bsodhide.value) or _('never'))
-			if bsodcnt >= maxbs:
-				txt += "\n" + "-"*80 + "\n"
-				txt += _("Warning: This is the last crash before an automatic restart is performed.\n")
-				txt += _("Should the crash counter be reset to prevent a restart?")
-				self.lastestBsodWarning = True
-			try:
-				self.session.openWithCallback(self.infoBsodCallback, MessageBox, txt, type=MessageBox.TYPE_ERROR, default = False, close_on_any_key=not self.lastestBsodWarning, showYESNO = self.lastestBsodWarning)
-				self.infoBsodIsShown = True
-			except Exception, e:
-				#print "[InfoBarHandleBsod] Exception:", e
-				self.checkBsodTimer.stop()
-				self.checkBsodTimer.start(5000, True)
-				self.infoBsodCallback(False)
-				raise
-		self.lastBsod = bsodcnt
-
-	def infoBsodCallback(self, ret):
-		if ret and self.lastestBsodWarning:
-			resetBsodCounter()
-		self.infoBsodIsShown = False
-		self.lastestBsodWarning = False
-
 #########################################################################################
